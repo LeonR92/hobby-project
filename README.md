@@ -13,3 +13,5 @@ Agentic AI built with PydanticAI that converts natural language infrastructure r
 **The Budget Inspector** (Tool Call): If the agent picks parts that cost $150 but you only have $100, the "Inspector" (Pydantic) blocks the result and tells the AI: "Too expensive. Redesign it using cheaper parts."
 
 **The Delivery** (Tool Call): It hands you a clean, error-free Markdown file.
+
+**Self-Critique** (Prompt): Each agent self criticises its own output to reduce hallucination
