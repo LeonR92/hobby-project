@@ -34,4 +34,4 @@ requirement_agent = Agent(
 )
 
 
-requirement_agent.tool(generate_technical_specs)
+requirement_agent.tool_plain(generate_technical_specs)
