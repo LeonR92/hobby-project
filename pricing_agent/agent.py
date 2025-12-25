@@ -1,6 +1,6 @@
 from typing import List
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 from pydantic_ai import Agent
 
 from ai_model import model
@@ -14,13 +14,18 @@ class ServicePrice(BaseModel):
     price: float = Field(description="The monthly cost in USD")
 
 
-# 2. Define the final output (The Contract)
 class PricingAgentOutput(BaseModel):
     found: bool = Field(description="True if pricing was successfully retrieved")
     breakdown: List[ServicePrice] = Field(
         description="A granular list of each component's cost"
     )
     total_cost: float = Field(description="The sum of all prices in the breakdown")
+
+    @model_validator(mode="after")
+    def calculate_total(self) -> "PricingAgentOutput":
+        actual_sum = sum(item.price for item in self.breakdown)
+        self.total_cost = round(actual_sum, 2)
+        return self
 
 
 pricing_agent = Agent(
