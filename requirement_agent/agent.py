@@ -1,4 +1,4 @@
-from typing import List
+from typing import ClassVar, List
 
 from pydantic import BaseModel, Field, field_validator
 from pydantic_ai import Agent
@@ -15,10 +15,15 @@ class RequirementAgentOutput(BaseModel):
     suggested_technologies: List[str] = Field(description="List of stack components")
     cost_estimate: float = Field(description="Total project cost in USD")
 
+    MINIMUM_COST: ClassVar[float] = 500.0
+
     @field_validator("cost_estimate")
     @classmethod
-    def validate_cost(cls, v: float) -> float:
-        if v < 500:
+    def validate_cost(
+        cls,
+        v: float,
+    ) -> float:
+        if v < cls.MINIMUM_COST:
             raise ValueError(
                 f"Estimate of ${v} is too low. Minimum infrastructure "
                 "baseline is $500. Please re-calculate including hosting."
