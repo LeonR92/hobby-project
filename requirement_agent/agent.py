@@ -15,7 +15,7 @@ class RequirementAgentOutput(BaseModel):
     suggested_technologies: List[str] = Field(description="List of stack components")
     cost_estimate: float = Field(description="Total project cost in USD")
 
-    MINIMUM_COST: ClassVar[float] = 500.0
+    MINIMUM_COST: ClassVar[float] = 1.0
 
     @field_validator("cost_estimate")
     @classmethod
