@@ -11,17 +11,16 @@ async def main(user_prompt: str):
 
     req_result = await requirement_agent.run(user_prompt)
     tech_list = req_result.output.suggested_technologies
-    design_prompt = (
-        f"Design a system architecture using these technologies: {', '.join(tech_list)}"
-    )
-    design_result = await sysdesign_agent.run(design_prompt)
 
-    components_str = ", ".join([c.name for c in design_result.output.components])
+    components_str = {", ".join(tech_list)}
     pricing_prompt = (
         f"Provide a price breakdown for this architecture: {components_str}"
     )
     my_deps = Dependency(api_key="sk-your-fake-key-here")
-    final_result = await pricing_agent.run(pricing_prompt, deps=my_deps)
+    pricing_result = await pricing_agent.run(pricing_prompt, deps=my_deps)
+
+    design_prompt = f"Design a system architecture using these technologies: {', '.join(pricing_result)}"
+    final_result = await sysdesign_agent.run(design_prompt)
 
     return final_result.output
 
