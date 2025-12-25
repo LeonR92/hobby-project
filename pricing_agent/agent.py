@@ -1,6 +1,6 @@
 from typing import List
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, computed_field
 from pydantic_ai import Agent
 
 from ai_model import model
@@ -19,13 +19,12 @@ class PricingAgentOutput(BaseModel):
     breakdown: List[ServicePrice] = Field(
         description="A granular list of each component's cost"
     )
-    total_cost: float = Field(description="The sum of all prices in the breakdown")
 
-    @model_validator(mode="after")
-    def calculate_total(self) -> "PricingAgentOutput":
-        actual_sum = sum(item.price for item in self.breakdown)
-        self.total_cost = round(actual_sum, 2)
-        return self
+    @computed_field
+    @property
+    def total_cost(self) -> float:
+        """Deterministically sums the breakdown. The LLM never touches this."""
+        return round(sum(item.price for item in self.breakdown), 2)
 
 
 pricing_agent = Agent(
